@@ -186,4 +186,26 @@ class LineArcSweepView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : LineArcSweepView) {
+
+        private val animator : Animator = Animator(view)
+        private val las : LineArcSweep = LineArcSweep(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            las.draw(canvas, paint)
+            animator.animate {
+                las.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            las.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
