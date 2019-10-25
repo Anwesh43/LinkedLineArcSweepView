@@ -11,6 +11,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Color
+import android.graphics.Canvas
 
 val nodes : Int = 5
 val scGap : Float = 0.02f
@@ -19,5 +20,37 @@ val sizeFactor : Float = 2.9f
 val delay : Long = 20
 val foreColor : Int = Color.parseColor("#01579B")
 val backColor : Int = Color.parseColor("#BDBDBD")
+val sweepDeg : Float = 60f
+val parts : Int = 2
 
 fun Float.sinify() : Float = Math.sin(this * Math.PI / 180).toFloat()
+
+fun Canvas.drawLineArc(size : Float, scale : Float, paint : Paint) {
+    val sc : Float = scale.sinify()
+    val deg : Float = sweepDeg * sc
+    save()
+    rotate(deg)
+    drawLine(0f, 0f, 0f, -size, paint)
+    restore()
+    drawArc(RectF(-size / 2, -size / 2, size /2, size / 2), 0f, deg, true, paint)
+}
+
+fun Canvas.drawLineArcSweep(size : Float, scale : Float, paint : Paint) {
+    for (j in 0..(parts - 1)) {
+        save()
+        scale(1f - 2 * j, 1f)
+        drawLineArc(size, scale, paint)
+        restore()
+    }
+}
+
+fun Canvas.drawLASNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = w / (nodes + 1)
+    val size : Float = gap / sizeFactor
+    save()
+    translate(gap * (i + 1), h / 2)
+    drawLineArcSweep(size, scale, paint)
+    restore()
+}
