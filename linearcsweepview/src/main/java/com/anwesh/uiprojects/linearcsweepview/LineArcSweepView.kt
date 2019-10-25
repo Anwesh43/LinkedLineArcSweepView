@@ -162,4 +162,28 @@ class LineArcSweepView(ctx : Context) : View(ctx) {
             return this
         }
     }
+
+    data class LineArcSweep(var i : Int) {
+
+        private val root : LASNode = LASNode(0)
+        private var curr : LASNode = root
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            root.draw(canvas, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+    }
 }
