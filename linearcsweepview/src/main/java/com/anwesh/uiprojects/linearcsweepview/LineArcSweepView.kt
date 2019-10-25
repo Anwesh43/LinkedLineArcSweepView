@@ -22,8 +22,10 @@ val foreColor : Int = Color.parseColor("#01579B")
 val backColor : Int = Color.parseColor("#BDBDBD")
 val sweepDeg : Float = 60f
 val parts : Int = 2
+val startDeg : Float = 270f
+val arcFactor : Float = 0.67f
 
-fun Float.sinify() : Float = Math.sin(this * Math.PI / 180).toFloat()
+fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
 
 fun Canvas.drawLineArc(size : Float, scale : Float, paint : Paint) {
     val sc : Float = scale.sinify()
@@ -32,7 +34,7 @@ fun Canvas.drawLineArc(size : Float, scale : Float, paint : Paint) {
     rotate(deg)
     drawLine(0f, 0f, 0f, -size, paint)
     restore()
-    drawArc(RectF(-size / 2, -size / 2, size /2, size / 2), 0f, deg, true, paint)
+    drawArc(RectF(-size * arcFactor, -size * arcFactor, size * arcFactor, size * arcFactor), startDeg, deg, true, paint)
 }
 
 fun Canvas.drawLineArcSweep(size : Float, scale : Float, paint : Paint) {
@@ -49,6 +51,9 @@ fun Canvas.drawLASNode(i : Int, scale : Float, paint : Paint) {
     val h : Float = height.toFloat()
     val gap : Float = w / (nodes + 1)
     val size : Float = gap / sizeFactor
+    paint.color = foreColor
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
     save()
     translate(gap * (i + 1), h / 2)
     drawLineArcSweep(size, scale, paint)
@@ -110,8 +115,8 @@ class LineArcSweepView(ctx : Context) : View(ctx) {
 
         fun start() {
             if (!animated) {
-                animated = false
-                view.invalidate()
+                animated = true
+                view.postInvalidate()
             }
         }
 
