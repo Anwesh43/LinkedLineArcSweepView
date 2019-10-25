@@ -19,3 +19,5 @@ val sizeFactor : Float = 2.9f
 val delay : Long = 20
 val foreColor : Int = Color.parseColor("#01579B")
 val backColor : Int = Color.parseColor("#BDBDBD")
+
+fun Float.sinify() : Float = Math.sin(this * Math.PI / 180).toFloat()
